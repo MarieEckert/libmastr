@@ -1,0 +1,11 @@
+*valgrind*
+*vgcore*
+out/
+obj/
+doc/doxygen
+mcfg_test
+*.a
+*.swp
+*.log
+compile_flags.txt
+*.test_exec
