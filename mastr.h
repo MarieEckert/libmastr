@@ -28,7 +28,9 @@
 #ifndef ME_LIBMASTR_H
 #define ME_LIBMASTR_H
 
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #define MASTR_PP_STR(x)		  #x
 #define MASTR_PP_STRINGIFY(x) STR(x)
@@ -56,5 +58,68 @@ String *mastr_string_append(String *a, const String *b);
 String *mastr_string_append_cstr(String *a, const char *b);
 
 String *mastr_string_resize(String *a, uint32_t newSize);
+
+/* refcounted strings */
+
+#define MASTR_RCSTRING_USE(str) \
+	do {                        \
+		str.refcount++;         \
+	} while(0)
+
+#define MASTR_RCSTRING_DONE(str) \
+	do {                         \
+		if(str.refcount > 0) {   \
+			str.refcount--;      \
+		}                        \
+		if(str.refcount == 0) {  \
+			free(str.string);    \
+		}                        \
+	} while(0)
+
+#define MASTR_CONSTRUCT_RCSTRING(str) \
+	(RCString)                        \
+	{                                 \
+		.refcount = 0, .string = str, \
+	}
+
+#define MASTR_CONSTRUCT_RCSTRING_RESULT(rcstring)               \
+	(RCStringResult)                                            \
+	{                                                           \
+		.hasValue = rcstring.string != NULL, .value = rcstring, \
+	}
+
+/**
+ * @brief Container Type for a String for enabling reference-counting.
+ * To properly utilise this call the MASTR_RCSTRING_USE macro with the RCString
+ * as its parameter at the start of the scope where it is used and call the
+ * MASTR_RCSTRING_DONE macro when leaving the scope.
+ */
+typedef struct {
+	uint32_t refcount;
+	String *string;
+} RCString;
+
+/**
+ * @brief Result type for functions returning an RCString. Used to avoid
+ * NULL checks and having RCStrings as pointers.
+ */
+typedef struct {
+	bool hasValue;
+	RCString value;
+} RCStringResult;
+
+/**
+ * @brief Create a new RCString with the given byte capacity. The
+ * initial reference count will be set to 0.
+ */
+RCStringResult mastr_rcstring_new(uint32_t byteCapacity);
+
+RCStringResult mastr_rcstring_from(const String *original);
+
+RCStringResult mastr_rcstring_from_cstr(const char *original);
+
+RCStringResult mastr_rcstring_append(RCString a, RCString b);
+
+RCStringResult mastr_rcstring_append_cstr(RCString a, const char *b);
 
 #endif

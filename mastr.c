@@ -120,3 +120,38 @@ mastr_string_resize(String *a, uint32_t newSize)
 
 	return a;
 }
+
+RCStringResult
+mastr_rcstring_new(uint32_t byteCapacity)
+{
+	String *string = mastr_string_new(byteCapacity);
+	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}
+
+RCStringResult
+mastr_rcstring_from(const String *original)
+{
+	String *string = mastr_string_from(original);
+	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}
+
+RCStringResult
+mastr_rcstring_from_cstr(const char *original)
+{
+	String *string = mastr_string_from_cstr(original);
+	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}
+
+RCStringResult
+mastr_rcstring_append(RCString a, RCString b)
+{
+	String *string = mastr_string_append(a.string, b.string);
+	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}
+
+RCStringResult
+mastr_rcstring_append_cstr(RCString a, const char *b)
+{
+	String *string = mastr_string_append_cstr(a.string, b);
+	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}

@@ -2,6 +2,15 @@
 
 #include "mastr.h"
 
+#define RCSTRINGRESULT_CHECK(rcs, dest, tag)   \
+	do {                                       \
+		if(!rcs.hasValue) {                    \
+			fprintf(stderr, tag " failed!\n"); \
+			return 1;                          \
+		}                                      \
+		dest = rcs.value;                      \
+	} while(0)
+
 int
 main(void)
 {
@@ -29,6 +38,21 @@ main(void)
 	}
 
 	printf("str3: %s\n", str3->data);
+
+	RCString rcstr1;
+	RCStringResult maybe_rcstr1 = mastr_rcstring_new(16);
+	RCSTRINGRESULT_CHECK(maybe_rcstr1, rcstr1, "rcstring_new 1");
+
+	maybe_rcstr1 =
+		mastr_rcstring_append(rcstr1, MASTR_CONSTRUCT_RCSTRING(str3));
+	RCSTRINGRESULT_CHECK(maybe_rcstr1, rcstr1, "rcstring_append 1");
+
+	printf("rcstr1: %s\n", rcstr1.string->data);
+
+	MASTR_RCSTRING_DONE(rcstr1);
+	free(str1);
+	free(str2);
+	free(str3);
 
 	return 0;
 }
