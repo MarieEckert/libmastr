@@ -20,7 +20,7 @@ sector config
 
 	str cc 'clang'
 	str cflags '-std=c17 -gdwarf-4 -Wextra -Wall -Iinclude/ -Isrc/'
-	str ldflags '-lm -L. -l$(/config/files/libname)'
+	str ldflags '-lm -L. -l$(/config/files/libname) -v'
 
 	list str targets 'clean', 'debug', 'release'
 	str default 'debug'

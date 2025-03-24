@@ -42,14 +42,14 @@
 typedef struct {
 	uint32_t capacity;
 	uint32_t length;
-	uint8_t data[];
+	char data[];
 } String;
 
 String *mastr_string_new(uint32_t byteCapacity);
 
 String *mastr_string_from(const String *original);
 
-String *mastr_string_from_cstr(char *original);
+String *mastr_string_from_cstr(const char *original);
 
 String *mastr_string_append(String *a, const String *b);
 
