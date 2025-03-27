@@ -33,9 +33,9 @@ sector targets
 		str exec '#!/bin/bash
 			set -e
 			if [ -d "$(/config/files/obj)" ]; then
-			COMMAND="rm -rf $(/config/files/obj)"
-			printf "	\$COMMAND\\n"
-			$COMMAND
+				COMMAND="rm -rf $(/config/files/obj)"
+				printf "	\$COMMAND\\n"
+				$COMMAND
 			fi
 
 			COMMAND="mkdir $(/config/files/obj)"
@@ -43,9 +43,9 @@ sector targets
 			$COMMAND
 
 			if [ -f $(/config/files/libfile) ]; then
-			COMMAND="rm $(/config/files/libfile)"
-			printf "	\$COMMAND\\n"
-			$COMMAND
+				COMMAND="rm $(/config/files/libfile)"
+				printf "	\$COMMAND\\n"
+				$COMMAND
 			fi
 		'
 	end
@@ -65,16 +65,16 @@ sector c_rules
 		str output_format '$(/config/files/obj)$(%element%).o'
 
 		str exec '#!/bin/bash
-		set -e
+			set -e
 
-		if [ ! -d \$(dirname $(%output%)) ]; then
-			mkdir -p \$(dirname $(%output%))
-		fi
+			if [ ! -d \$(dirname $(%output%)) ]; then
+				mkdir -p \$(dirname $(%output%))
+			fi
 
 
-		COMMAND="$(/config/mariebuild/cc) $(/config/mariebuild/cflags) $(%target_cflags%) -c -o $(%output%) $(%input%)"
-		printf "	\$COMMAND\\n"
-		$COMMAND
+			COMMAND="$(/config/mariebuild/cc) $(/config/mariebuild/cflags) $(%target_cflags%) -c -o $(%output%) $(%input%)"
+			printf "	\$COMMAND\\n"
+			$COMMAND
 		'
 	end
 
