@@ -64,6 +64,7 @@ sector targets
 				fi
 
 				LIBDIR="$INSTALL_PREFIX/lib"
+				INCLUDEDIR="$INSTALL_PREFIX/include"
 
 				_install() {
 					echo "  -> Installing $1"
@@ -73,6 +74,7 @@ sector targets
 				}
 
 				_install "shared library" "-Dm 755 ./libmastr.so $LIBDIR/libmastr.so"
+				_install "header file" "-Dm 644 ./mastr.h $INCLUDEDIR/mastr.h"
 		'
 	end
 
