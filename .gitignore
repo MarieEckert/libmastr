@@ -3,7 +3,7 @@
 out/
 obj/
 doc/doxygen
-mcfg_test
+mastr_test
 *.a
 *.so
 *.swp
