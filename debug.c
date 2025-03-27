@@ -14,8 +14,8 @@
 int
 main(void)
 {
-	String *str1 = mastr_string_from_cstr("Hello, World!");
-	printf("str1: %s\n", str1->data);
+	String *str1 = mastr_string_from_cstr("►Hello, World!");
+	printf("str1: %s\n> length = %zu\n", str1->data, mastr_utf8_strlen(str1));
 
 	String *str2 = mastr_string_from_cstr("Test");
 	printf("str2: %s\n", str2->data);

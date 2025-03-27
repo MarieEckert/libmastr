@@ -69,6 +69,10 @@ String *mastr_string_append_cstr(String *a, const char *b);
  */
 String *mastr_string_resize(String *a, uint32_t newSize);
 
+ssize_t mastr_strstr(const String *haystack, const String *needle);
+
+ssize_t mastr_strstr_cstr(const String *haystack, const char *needle);
+
 /* refcounted strings */
 
 #define MASTR_RCSTRING_USE(str) \
@@ -151,5 +155,19 @@ RCStringResult mastr_rcstring_append(RCString a, RCString b);
  * @note This function does not affect the reference count of its parameters.
  */
 RCStringResult mastr_rcstring_append_cstr(RCString a, const char *b);
+
+/* utf8 support */
+
+size_t mastr_utf8_strlen(const String *string);
+
+ssize_t mastr_utf8_strchr(const String *string, uint32_t character);
+
+ssize_t mastr_utf8_strchrnul(const String *string, uint32_t character);
+
+size_t mastr_utf8_rcstrlen(const String *string);
+
+ssize_t mastr_utf8_rcstrchr(const String *string, uint32_t character);
+
+ssize_t mastr_utf8_rcstrchrnul(const String *string, uint32_t character);
 
 #endif

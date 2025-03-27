@@ -109,6 +109,42 @@ mastr_string_resize(String *a, uint32_t newSize)
 	return a;
 }
 
+ssize_t
+_mastr_intern_strstr(const String *haystack,
+					 const char *needle,
+					 size_t needleLength)
+{
+	ssize_t pos = 0;
+
+	bool found = true;
+	for(; pos < haystack->length; pos++) {
+		for(size_t ix = 0; ix < needleLength; ix++) {
+			if(haystack->data[pos] != needle[needleLength]) {
+				found = false;
+				break;
+			}
+		}
+
+		if(found) {
+			break;
+		}
+	}
+
+	return found ? pos : -1;
+}
+
+ssize_t
+mastr_strstr(const String *haystack, const String *needle)
+{
+	return _mastr_intern_strstr(haystack, needle->data, needle->length);
+}
+
+ssize_t
+mastr_strstr_cstr(const String *haystack, const char *needle)
+{
+	return _mastr_intern_strstr(haystack, needle, strlen(needle));
+}
+
 RCStringResult
 mastr_rcstring_new(uint32_t byteCapacity)
 {
@@ -142,4 +178,45 @@ mastr_rcstring_append_cstr(RCString a, const char *b)
 {
 	String *string = mastr_string_append_cstr(a.string, b);
 	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}
+
+size_t
+mastr_utf8_strlen(const String *string)
+{
+	size_t length = 0;
+	for(size_t ix = 0; ix < string->length; ix++) {
+		length += (size_t)(*(string->data + ix) & 0xC0) != 0x80;
+	}
+
+	return length;
+}
+
+ssize_t
+mastr_utf8_strchr(const String *string, uint32_t character)
+{
+	char utf8_char[8];
+	const size_t char_length = mastr_utf32_to_utf8_char(character, &utf8_char);
+	utf8_char[char_length] = '\0';
+
+	return mastr_strstr_cstr(string, utf8_char);
+}
+
+ssize_t
+mastr_utf8_strchrnul(const String *string, uint32_t character)
+{
+}
+
+size_t
+mastr_utf8_rcstrlen(const String *string)
+{
+}
+
+ssize_t
+mastr_utf8_rcstrchr(const String *string, uint32_t character)
+{
+}
+
+ssize_t
+mastr_utf8_rcstrchrnul(const String *string, uint32_t character)
+{
 }
