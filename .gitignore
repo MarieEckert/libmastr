@@ -5,6 +5,7 @@ obj/
 doc/doxygen
 mcfg_test
 *.a
+*.so
 *.swp
 *.log
 compile_flags.txt
