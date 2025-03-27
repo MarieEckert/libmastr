@@ -21,14 +21,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define MASTR_PP_STR(x)		  #x
-#define MASTR_PP_STRINGIFY(x) STR(x)
-
-#define MASTR_VERSION_MINOR	  0
-#define MASTR_VERSION_MAJOR	  0
-#define MASTR_VERSION_STRING                   \
-	MASTR_PP_STRINGIFY(LIBMASTR_VERSION_MAJOR) \
-	"." MASTR_PP_STRINGIFY(LIBMASTR_VERSION_MINOR)
+#define MASTR_VERSION "1.0.0"
 
 /* Regular Dynamic String */
 
