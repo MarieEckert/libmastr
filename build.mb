@@ -6,7 +6,7 @@ sector config
 		str libname 'mastr'
 		str libfile 'lib$(/config/files/libname).a'
 		str dylibfile 'lib$(/config/files/libname).so'
-		str testfile 'mcfg_test'
+		str testfile 'mastr_test'
 
 		list str sources
 			'mastr'
