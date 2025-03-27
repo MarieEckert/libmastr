@@ -54,6 +54,28 @@ sector targets
 		list str c_rules 'libsources', 'linklib', 'testsources', 'linktest'
 		str target_cflags ''
 	end
+
+	section install
+		str exec '#!/bin/bash
+				set -e
+
+				if [[ -z "${INSTALL_PREFIX}" ]]; then
+					INSTALL_PREFIX="/usr"
+				fi
+
+				LIBDIR="$INSTALL_PREFIX/lib"
+
+				_install() {
+					echo "  -> Installing $1"
+					COMMAND="install $2"
+					echo "      $COMMAND"
+					eval $COMMAND
+				}
+
+				_install "shared library" "-Dm 755 ./libmastr.so $LIBDIR/libmastr.so"
+		'
+	end
+
 end
 
 sector c_rules
