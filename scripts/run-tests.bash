@@ -2,7 +2,7 @@
 
 CC="clang"
 CFLAGS="-std=c17 -gdwarf-4 -Wextra -Wall -Iinclude/ -Isrc/"
-LDFLAGS="-lm -L. -lmcfg_2"
+LDFLAGS="-lm -L. -lmastr"
 
 TESTS="tests/creation.c tests/appending.c tests/rc_creation.c tests/rc_appending.c tests/utf8.c"
 
