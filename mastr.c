@@ -181,6 +181,38 @@ mastr_rcstring_append_cstr(RCString a, const char *b)
 }
 
 size_t
+mastr_utf32_to_utf8_char(uint32_t utf32, char **out_utf8_char)
+{
+	if(utf32 <= 0x7F) {
+		*out_utf8_char[0] = utf32;
+		return 1;
+	}
+
+	if(utf32 <= 0x7FF) {
+		*out_utf8_char[0] = 0xC0 | (utf32 >> 6);   /* 110xxxxx */
+		*out_utf8_char[1] = 0x80 | (utf32 & 0x3F); /* 10xxxxxx */
+		return 2;
+	}
+
+	if(utf32 <= 0xFFFF) {
+		*out_utf8_char[0] = 0xE0 | (utf32 >> 12);		  /* 1110xxxx */
+		*out_utf8_char[1] = 0x80 | ((utf32 >> 6) & 0x3F); /* 10xxxxxx */
+		*out_utf8_char[2] = 0x80 | (utf32 & 0x3F);		  /* 10xxxxxx */
+		return 3;
+	}
+
+	if(utf32 <= 0x10FFFF) {
+		*out_utf8_char[0] = 0xF0 | (utf32 >> 18);		   /* 11110xxx */
+		*out_utf8_char[1] = 0x80 | ((utf32 >> 12) & 0x3F); /* 10xxxxxx */
+		*out_utf8_char[2] = 0x80 | ((utf32 >> 6) & 0x3F);  /* 10xxxxxx */
+		*out_utf8_char[3] = 0x80 | (utf32 & 0x3F);		   /* 10xxxxxx */
+		return 4;
+	}
+
+	return 0;
+}
+
+size_t
 mastr_utf8_strlen(const String *string)
 {
 	size_t length = 0;
@@ -204,6 +236,9 @@ mastr_utf8_strchr(const String *string, uint32_t character)
 ssize_t
 mastr_utf8_strchrnul(const String *string, uint32_t character)
 {
+	const ssize_t result = mastr_utf8_strchr(string, character);
+
+	return result >= 0 ? result : string->length - 1;
 }
 
 size_t

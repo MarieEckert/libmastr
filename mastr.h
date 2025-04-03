@@ -21,6 +21,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include <sys/types.h>
+
 #define MASTR_VERSION "1.0.0"
 
 /* Regular Dynamic String */
@@ -157,6 +159,8 @@ RCStringResult mastr_rcstring_append(RCString a, RCString b);
 RCStringResult mastr_rcstring_append_cstr(RCString a, const char *b);
 
 /* utf8 support */
+
+size_t mastr_utf32_to_utf8_char(uint32_t utf32, char **out_utf8_char);
 
 size_t mastr_utf8_strlen(const String *string);
 
