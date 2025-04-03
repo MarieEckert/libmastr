@@ -74,7 +74,7 @@ sector targets
 				}
 
 				_install "shared library" "-Dm 755 ./libmastr.so $LIBDIR/libmastr.so"
-				_install "header file" "-Dm 644 ./mastr.h $INCLUDEDIR/mastr.h"
+				_install "header file" "-Dm 644 ./include/mastr.h $INCLUDEDIR/mastr.h"
 		'
 	end
 
