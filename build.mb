@@ -1,7 +1,7 @@
 sector config
 	section files
 		str obj 'obj/'
-		str src './'
+		str src 'src/'
 
 		str libname 'mastr'
 		str libfile 'lib$(/config/files/libname).a'
