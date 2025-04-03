@@ -109,6 +109,42 @@ mastr_string_resize(String *a, uint32_t newSize)
 	return a;
 }
 
+ssize_t
+_mastr_intern_strstr(const String *haystack,
+					 const char *needle,
+					 size_t needleLength)
+{
+	ssize_t pos = 0;
+
+	bool found = true;
+	for(; pos < haystack->length; pos++) {
+		for(size_t ix = 0; ix < needleLength; ix++) {
+			if(haystack->data[pos] != needle[needleLength]) {
+				found = false;
+				break;
+			}
+		}
+
+		if(found) {
+			break;
+		}
+	}
+
+	return found ? pos : -1;
+}
+
+ssize_t
+mastr_strstr(const String *haystack, const String *needle)
+{
+	return _mastr_intern_strstr(haystack, needle->data, needle->length);
+}
+
+ssize_t
+mastr_strstr_cstr(const String *haystack, const char *needle)
+{
+	return _mastr_intern_strstr(haystack, needle, strlen(needle));
+}
+
 RCStringResult
 mastr_rcstring_new(uint32_t byteCapacity)
 {
@@ -142,4 +178,86 @@ mastr_rcstring_append_cstr(RCString a, const char *b)
 {
 	String *string = mastr_string_append_cstr(a.string, b);
 	return MASTR_CONSTRUCT_RCSTRING_RESULT(MASTR_CONSTRUCT_RCSTRING(string));
+}
+
+size_t
+mastr_utf32_to_utf8_char(uint32_t utf32, char out_utf8_char[static 5])
+{
+	if(utf32 <= 0x7F) {
+		out_utf8_char[0] = utf32;
+		out_utf8_char[1] = 0; /* Terminator */
+		return 1;
+	}
+
+	if(utf32 <= 0x7FF) {
+		out_utf8_char[0] = 0xC0 | (utf32 >> 6);	  /* 110xxxxx */
+		out_utf8_char[1] = 0x80 | (utf32 & 0x3F); /* 10xxxxxx */
+		out_utf8_char[2] = 0;					  /* Terminator */
+		return 2;
+	}
+
+	if(utf32 <= 0xFFFF) {
+		out_utf8_char[0] = 0xE0 | (utf32 >> 12);		 /* 1110xxxx */
+		out_utf8_char[1] = 0x80 | ((utf32 >> 6) & 0x3F); /* 10xxxxxx */
+		out_utf8_char[2] = 0x80 | (utf32 & 0x3F);		 /* 10xxxxxx */
+		out_utf8_char[3] = 0;							 /* Terminator */
+		return 3;
+	}
+
+	if(utf32 <= 0x10FFFF) {
+		out_utf8_char[0] = 0xF0 | (utf32 >> 18);		  /* 11110xxx */
+		out_utf8_char[1] = 0x80 | ((utf32 >> 12) & 0x3F); /* 10xxxxxx */
+		out_utf8_char[2] = 0x80 | ((utf32 >> 6) & 0x3F);  /* 10xxxxxx */
+		out_utf8_char[3] = 0x80 | (utf32 & 0x3F);		  /* 10xxxxxx */
+		out_utf8_char[4] = 0;							  /* Terminator */
+		return 4;
+	}
+
+	return 0;
+}
+
+size_t
+mastr_utf8_strlen(const String *string)
+{
+	size_t length = 0;
+	for(size_t ix = 0; ix < string->length; ix++) {
+		length += (size_t)(*(string->data + ix) & 0xC0) != 0x80;
+	}
+
+	return length;
+}
+
+ssize_t
+mastr_utf8_strchr(const String *string, uint32_t character)
+{
+	char utf8_char[8];
+	const size_t char_length = mastr_utf32_to_utf8_char(character, utf8_char);
+
+	return _mastr_intern_strstr(string, utf8_char, char_length);
+}
+
+ssize_t
+mastr_utf8_strchrnul(const String *string, uint32_t character)
+{
+	const ssize_t result = mastr_utf8_strchr(string, character);
+
+	return result >= 0 ? result : string->length - 1;
+}
+
+size_t
+mastr_utf8_rcstrlen(RCString string)
+{
+	return mastr_utf8_strlen(string.string);
+}
+
+ssize_t
+mastr_utf8_rcstrchr(RCString string, uint32_t character)
+{
+	return mastr_utf8_strchr(string.string, character);
+}
+
+ssize_t
+mastr_utf8_rcstrchrnul(RCString string, uint32_t character)
+{
+	return mastr_utf8_strchrnul(string.string, character);
 }
