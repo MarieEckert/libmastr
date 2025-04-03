@@ -158,20 +158,56 @@ RCStringResult mastr_rcstring_append(RCString a, RCString b);
  */
 RCStringResult mastr_rcstring_append_cstr(RCString a, const char *b);
 
-/* utf8 support */
+/* unicode support */
 
-size_t mastr_utf32_to_utf8_char(uint32_t utf32, char **out_utf8_char);
+/**
+ * @brief Convert the given UTF-32 encoded Code-Point to its UTF-8
+ * representation.
+ * @param out_utf8_char The char array to write the UTF-8 bytes and a NULL
+ * Terminator to. Needs to be atleast 5 bytes large.
+ * @return The amount of bytes written (not including the NULL Terminator).
+ */
+size_t mastr_utf32_to_utf8_char(uint32_t utf32, char out_utf8_char[static 5]);
 
+/**
+ * @brief Get the length/number of codepoints of a UTF-8 encoded string.
+ * @note Does not resolve Grapheme Clusters, this literally just counts the
+ * codepoints.
+ */
 size_t mastr_utf8_strlen(const String *string);
 
+/**
+ * @brief Get the first appearance of a Character/Codepoint in the given String.
+ * @param character The Character/Codepoint to search for (UTF-32).
+ * @return The byte-offset from string->data for the first byte of the character
+ * in the string. -1 if not found
+ */
 ssize_t mastr_utf8_strchr(const String *string, uint32_t character);
 
+/**
+ * @brief Get the first appearance of a Character/Codepoint in the given String.
+ * @param character The Character/Codepoint to search for (UTF-32).
+ * @return The byte-offset from string->data for the first byte of the character
+ * in the string or the NULL Terminator.
+ */
 ssize_t mastr_utf8_strchrnul(const String *string, uint32_t character);
 
-size_t mastr_utf8_rcstrlen(const String *string);
+/**
+ * @brief mastr_utf8_strlen for RCStrings.
+ * @see mastr_utf8_strlen
+ */
+size_t mastr_utf8_rcstrlen(RCString string);
 
-ssize_t mastr_utf8_rcstrchr(const String *string, uint32_t character);
+/**
+ * @brief mastr_utf8_strchr for RCStrings.
+ * @see mastr_utf8_strchr
+ */
+ssize_t mastr_utf8_rcstrchr(RCString string, uint32_t character);
 
-ssize_t mastr_utf8_rcstrchrnul(const String *string, uint32_t character);
+/**
+ * @brief mastr_utf8_strchrnul for RCStrings.
+ * @see mastr_utf8_strchrnul
+ */
+ssize_t mastr_utf8_rcstrchrnul(RCString string, uint32_t character);
 
 #endif
