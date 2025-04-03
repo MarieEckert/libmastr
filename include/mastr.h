@@ -167,7 +167,7 @@ RCStringResult mastr_rcstring_append_cstr(RCString a, const char *b);
  * Terminator to. Needs to be atleast 5 bytes large.
  * @return The amount of bytes written (not including the NULL Terminator).
  */
-size_t mastr_utf32_to_utf8_char(uint32_t utf32, char out_utf8_char[static 5]);
+size_t mastr_utf32_to_utf8_char(uint32_t utf32, char(out_utf8_char)[static 5]);
 
 /**
  * @brief Get the length/number of codepoints of a UTF-8 encoded string.
